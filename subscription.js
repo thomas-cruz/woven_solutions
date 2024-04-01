@@ -36,6 +36,7 @@ Notes
 
  * Computes the monthly charge for a given subscription.
  *
+ *
  * @returns {number} The total monthly bill for the customer in cents, rounded
  * to the nearest cent. For example, a bill of $20.00 should return 2000.
  * If there are no active users or the subscription is null, returns 0.
@@ -87,19 +88,13 @@ function monthlyCharge(month, subscription, users) {
     return 0;
   }
   
-  console.log({month})
   const [year, mon] = month.split('-');
-  console.log({year, mon});
+
   const monthNum = parseInt(mon);
   const date = new Date(year, monthNum - 1);
   const firstDay = firstDayOfMonth(date);
   const lastDay = lastDayOfMonth(date);
-  console.log({firstDay, lastDay})
-  
-  const diff = dateDiffInDays(firstDay, lastDay);
-  const dailyRate = subscription.monthlyPriceInCents / diff;
-  console.log({diff, dailyRate})
-  console.log({users})
+
   const activeUsers = users.filter(user => {
     const activatedDate = new Date(user.activatedOn);
     const deactivatedDate = user.deactivatedOn ? new Date(user.deactivatedOn) : null;
@@ -113,7 +108,7 @@ function monthlyCharge(month, subscription, users) {
       return true;
     }
   });
-  console.log(Math.round(activeUsers.length * subscription.monthlyPriceInCents))
+  
   return Math.round(activeUsers.length * subscription.monthlyPriceInCents);
 }
 
@@ -158,13 +153,4 @@ function lastDayOfMonth(date) {
 **/
 function nextDay(date) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1)
-}
-
-function dateDiffInDays(a, b) {
-  const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-  // Discard the time and time-zone information.
-  const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
-  const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
-
-  return Math.floor((utc2 - utc1) / _MS_PER_DAY) + 1;
 }
